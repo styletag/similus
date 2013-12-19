@@ -7,14 +7,18 @@ module Similus
   class Config
     attr_accessor :backend
     attr_accessor :redis_server
+    attr_accessor :redis_port
     attr_accessor :redis_db
     attr_accessor :logfile
+    attr_accessor :redis_driver
 
     def initialize #:nodoc:
       self.backend      = :redis
-      self.redis_server = "localhost:6379"
+      self.redis_server = "localhost"
+      self.redis_port = "6379"
       self.redis_db     = 9
       self.logfile      = STDOUT
+      self.redis_driver = nil
     end
 
     def logger
