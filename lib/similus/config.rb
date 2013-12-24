@@ -9,6 +9,9 @@ module Similus
     attr_accessor :redis_server
     attr_accessor :redis_port
     attr_accessor :redis_db
+    attr_accessor :redis_cache_server
+    attr_accessor :redis_cache_port
+    attr_accessor :redis_cache_db
     attr_accessor :logfile
     attr_accessor :redis_driver
 
@@ -17,6 +20,9 @@ module Similus
       self.redis_server = "localhost"
       self.redis_port = "6379"
       self.redis_db     = 9
+      self.redis_cache_server = "localhost"
+      self.redis_cache_port = "6379"
+      self.redis_cache_db     = 9
       self.logfile      = STDOUT
       self.redis_driver = nil
     end
