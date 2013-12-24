@@ -22,7 +22,7 @@ module Similus
       objects ||= load_activity(src, options)
 
       similar_objects = objects.inject(empty_hash) do |result, id|
-        redis.smembers("activity:#{id}").each { |similar| result[similar] += 1 }
+        redis_cache.smembers("activity:#{id}").each { |similar| result[similar] += 1 }
         result
       end
 
@@ -53,7 +53,7 @@ module Similus
 
       # Get recommended score of similar objects's activity
       result = src_sim.inject(empty_hash) do |res, sim|
-        dst_act = redis.smembers("activity:#{sim[0]}")
+        dst_act = redis_cache.smembers("activity:#{sim[0]}")
         rscore(ropt[:method], res, dst_act, src_act, sim[1], sim[0], &block)
       end
 
@@ -128,17 +128,17 @@ module Similus
 
       # Retrieve last activity for obj
       act_key = activity_key(src[:obj_id])
-      last ? redis.zrevrange("#{act_key}:s", 0, last-1) : redis.smembers(act_key)
+      last ? redis_cache.zrevrange("#{act_key}:s", 0, last-1) : redis_cache.smembers(act_key)
     end
 
     # data_with_score is hash {key => score} or array [[key,score]]
     def load_objects(data_with_score)
       data_with_score = data_with_score.to_a if data_with_score.is_a?(Hash)
       data_with_score.map do |item|
-        obj = redis.hgetall "object:#{item[0]}"
+        obj = redis_cache.hgetall "object:#{item[0]}"
         { :score             => item[1],
           :id                => obj["id"],
-          :class             => redis.get("class:#{obj["class_id"]}")
+          :class             => redis_cache.get("class:#{obj["class_id"]}")
         }
       end
     end
